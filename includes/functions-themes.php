@@ -565,8 +565,8 @@ function yourls_get_active_theme_url( ) {
  * @return int 0, 1 or -1, see uasort()
  */
 function yourls_themes_sort_callback( $theme_a, $theme_b ) {
-	$orderby = yourls_apply_filters( 'themes_sort_callback', 'Theme Name' );
-	$order   = yourls_apply_filters( 'themes_sort_callback', 'ASC' );
+	$orderby = yourls_apply_filter( 'themes_sort_callback', 'Theme Name' );
+	$order   = yourls_apply_filter( 'themes_sort_callback', 'ASC' );
 
 	$a = $theme_a[$orderby];
 	$b = $theme_b[$orderby];

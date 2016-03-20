@@ -234,7 +234,7 @@ function yourls_html_global_stats() {
 	$html .= '<strong class="status-number increment">' . yourls_number_format_i18n( $total_urls ) . '</strong><p>' . yourls__( 'Links' );
 	$html .= '</p></div><div class="global-stats-data">';
 	$html .= '<strong class="status-number">' . yourls_number_format_i18n( $total_clicks ) . '</strong><p>' . yourls__( 'Clicks' ) . '</p></div></div>';
-	echo yourls_apply_filters( 'html_global_stats', $html );
+	echo yourls_apply_filter( 'html_global_stats', $html );
 }
 
 /**
@@ -304,7 +304,7 @@ function yourls_html_language_attributes() {
 	
 	$attributes[] = ( yourls_is_rtl() ? 'dir="rtl"' : 'dir="ltr"' );
 	
-	$doctype = yourls_apply_filters( 'html_language_attributes_doctype', 'html' );
+	$doctype = yourls_apply_filter( 'html_language_attributes_doctype', 'html' );
 	// Experimental: get HTML lang from locale. Should work. Convert fr_FR -> fr-FR
 	if ( $lang = str_replace( '_', '-', yourls_get_locale() ) ) {
 		if( $doctype == 'xhtml' ) {
@@ -315,7 +315,7 @@ function yourls_html_language_attributes() {
 	}
 
 	$output = implode( ' ', $attributes );
-	$output = yourls_apply_filters( 'html_language_attributes', $output );
+	$output = yourls_apply_filter( 'html_language_attributes', $output );
 	echo $output;
 }
 
@@ -326,7 +326,7 @@ function yourls_html_language_attributes() {
 function yourls_html_footer() {
 	echo '<hr /><div class="footer" role="contentinfo"><p>';
 	$footer  = yourls_s( 'Powered by %s', yourls_html_link( 'http://yourls.org/', 'YOURLS', 'YOURLS', false, false ) );
-		echo yourls_apply_filters( 'html_footer_text', $footer );
+		echo yourls_apply_filter( 'html_footer_text', $footer );
 	echo '</p></div>';
 }
 
@@ -798,7 +798,7 @@ function yourls_table_add_row( $keyword, $url, $title = '', $ip, $clicks, $times
 
 	$protocol_warning = '';
 	if( ! in_array( yourls_get_protocol( $url ) , array( 'http://', 'https://' ) ) )
-		$protocol_warning = yourls_apply_filters( 'add_row_protocol_warning', '<i class="warning protocol_warning fa fa-exclamation-circle" title="' . yourls__( 'Not a common link' ) . '"></i> ' );
+		$protocol_warning = yourls_apply_filter( 'add_row_protocol_warning', '<i class="warning protocol_warning fa fa-exclamation-circle" title="' . yourls__( 'Not a common link' ) . '"></i> ' );
 
 	// Row template that you can filter before it's parsed (don't remove HTML classes & id attributes)
 	$format = '<tr id="id-%id%">
