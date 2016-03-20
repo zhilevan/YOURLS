@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'Whoops' => array($vendorDir . '/filp/whoops/src'),
     'Requests' => array($vendorDir . '/rmccue/requests/library'),
     'Hautelook' => array($vendorDir . '/hautelook/phpass/src'),
+    'BookmarkletGen' => array($vendorDir . '/ozh/bookmarkletgen/src'),
 );

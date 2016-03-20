@@ -26,7 +26,7 @@ class Requests_SSL {
 	 *
 	 * @throws Requests_Exception On not obtaining a match for the host (`fsockopen.ssl.no_match`)
 	 * @param string $host Host name to verify against
-	 * @param array $cert Certificate data from openssl_x509_parse()
+	 * @param resource $context Stream context
 	 * @return bool
 	 */
 	public static function verify_certificate($host, $cert) {
@@ -44,9 +44,8 @@ class Requests_SSL {
 			$altnames = explode(',', $cert['extensions']['subjectAltName']);
 			foreach ($altnames as $altname) {
 				$altname = trim($altname);
-				if (strpos($altname, 'DNS:') !== 0) {
+				if (strpos($altname, 'DNS:') !== 0)
 					continue;
-				}
 
 				$has_dns_alt = true;
 
