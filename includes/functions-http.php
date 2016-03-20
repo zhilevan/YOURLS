@@ -206,8 +206,6 @@ function yourls_http_request( $type, $url, $headers, $data, $options ) {
 	if ( null !== $pre )
 		return $pre;
 
-	yourls_http_load_library();
-	
 	$options = array_merge( yourls_http_default_options(), $options );
 	
 	if( yourls_http_get_proxy() && !yourls_send_through_proxy( $url ) ) {
