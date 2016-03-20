@@ -2017,20 +2017,23 @@ function yourls_favicon( $echo = true ) {
         return $favicon;    
     }
 	
-	// search for favicon.(ico|png|gif)
-	foreach( array( 'png', 'ico', 'gif' ) as $ext ) {
+	$custom = null;
+	// search for favicon.(gif|ico|png|jpg|svg)
+	foreach( array( 'gif', 'ico', 'png', 'jpg', 'svg' ) as $ext ) {
 		if( file_exists( YOURLS_USERDIR. '/favicon.' . $ext ) ) {
-			$favicon = yourls_site_url( false, YOURLS_USERURL . '/favicon.' . $ext );
+			$custom = 'favicon.' . $ext;
 			break;
 		}
 	}
-	if ( $favicon === null )
-		$favicon = yourls_site_url( false, YOURLS_ASSETURL . '/img/favicon.ico' );
 	
-
+	if( $custom ) {
+		$favicon = yourls_site_url( false, YOURLS_USERURL . '/' . $custom );
+	} else {
+		$favicon = yourls_site_url( false, YOURLS_ASSETURL . '/img/favicon.ico' );
+	}
+    
 	if( $echo ) {
-			echo '<link rel="shortcut icon" href="'. $favicon . '">';
-	else
+		echo $favicon;
     }
 	return $favicon;
 }
