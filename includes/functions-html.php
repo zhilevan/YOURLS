@@ -336,19 +336,8 @@ function yourls_html_footer() {
  */
 function yourls_html_debug() {
 	global $ydb;
-	
-	$num_queries = sprintf( yourls_n( '1 query', '%s queries', $ydb->num_queries ), $ydb->num_queries );
-	?>
-	</div><?php // wrap ?>
-	<footer id="footer" role="contentinfo"><p>
-		<?php
-		$footer  = yourls_s( 'Powered by %s', '<a href="http://yourls.org/" title="YOURLS">YOURLS</a> v ' . YOURLS_VERSION );
-		$footer .= ' &ndash; '.$num_queries;
-		echo yourls_apply_filter( 'html_footer_text', $footer );
-		?>
-	</p></footer>
-	<?php if( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG == true ) {
-		echo '<div style="text-align:left"><pre>';
+	echo '<pre class="debug-info"><button type="button" class="close" onclick="$(this).parent().fadeOut();return false;" title="Dismiss">&times;</button>';
+	echo  'Queries: ' . $ydb->num_queries . "\n";
 		echo join( "\n", $ydb->debug_log );
 	echo '</pre>';
 	yourls_do_action( 'html_debug', $ydb->context );
