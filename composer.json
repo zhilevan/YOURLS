@@ -25,7 +25,9 @@
         "php": ">=5.3.0",
         "pomo/pomo": "*",
         "rmccue/requests": "*",
-        "hautelook/phpass": "*"
+        "hautelook/phpass": "*",
+        "ozh/bookmarkletgen": "*",
+        "jakeasmith/http_build_url": "*"
     },
     "require-dev": {
         "filp/whoops": "1.*",
