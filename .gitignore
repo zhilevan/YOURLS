@@ -51,6 +51,7 @@ includes/vendor/bin/
 ## Tests
 ############
 
+test*.php
 tests/
 
 ############

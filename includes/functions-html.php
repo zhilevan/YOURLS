@@ -1,5 +1,22 @@
 <?php
 /**
+ * Display <h1> header and logo
+ *
+ */
+function yourls_html_logo() {
+	yourls_do_action( 'pre_html_logo' );
+	?>
+	<header role="banner">
+	<h1>
+		<a href="<?php echo yourls_admin_url( 'index.php' ) ?>" title="YOURLS"><span>YOURLS</span>: <span>Y</span>our <span>O</span>wn <span>URL</span> <span>S</span>hortener<br/>
+		<img src="<?php yourls_site_url(); ?>/images/yourls-logo.png" alt="YOURLS" title="YOURLS" border="0" style="border: 0px;" /></a>
+	</h1>
+	</header>
+	<?php
+	yourls_do_action( 'html_logo' );
+}
+
+/**
  * Display HTML head and <body> tag
  *
  * @param string $context Context of the page (stats, index, infos, ...)
@@ -15,7 +32,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 		header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT' );
 		header( 'Cache-Control: no-cache, must-revalidate, max-age=0' );
 		header( 'Pragma: no-cache' );
-		yourls_content_type_header( yourls_apply_filters( 'html_head_content-type', 'text/html' ) );
+		yourls_content_type_header( yourls_apply_filter( 'html_head_content-type', 'text/html' ) );
 		yourls_do_action( 'admin_headers', $context, $title );
 	}
 	
@@ -335,8 +352,19 @@ function yourls_html_footer() {
  */
 function yourls_html_debug() {
 	global $ydb;
-	echo '<pre class="debug-info"><button type="button" class="close" onclick="$(this).parent().fadeOut();return false;" title="Dismiss">&times;</button>';
-	echo  'Queries: ' . $ydb->num_queries . "\n";
+	
+	$num_queries = sprintf( yourls_n( '1 query', '%s queries', $ydb->num_queries ), $ydb->num_queries );
+	?>
+	</div><?php // wrap ?>
+	<footer id="footer" role="contentinfo"><p>
+		<?php
+		$footer  = yourls_s( 'Powered by %s', '<a href="http://yourls.org/" title="YOURLS">YOURLS</a> v ' . YOURLS_VERSION );
+		$footer .= ' &ndash; '.$num_queries;
+		echo yourls_apply_filter( 'html_footer_text', $footer );
+		?>
+	</p></footer>
+	<?php if( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG == true ) {
+		echo '<div style="text-align:left"><pre>';
 		echo join( "\n", $ydb->debug_log );
 	echo '</pre>';
 	yourls_do_action( 'html_debug', $ydb->context );
@@ -386,6 +414,7 @@ function yourls_html_search( $params = array() ) {
 						// First search control: text to search
 						$_input = '<input type="text" name="search" class="form-control search-primary" value="' . yourls_esc_attr( $search_text ) . '" />';
 						$_options = array(
+                            'all'     => yourls__( 'All fields' ),
 							'keyword' => yourls__( 'Short URL' ),
 							'url'     => yourls__( 'URL' ),
 							'title'   => yourls__( 'Title' ),
@@ -541,7 +570,7 @@ function yourls_html_select( $name, $options, $selected = '', $display = false )
 		$html .= ">$text</option>";
 	}
 	$html .= "</select>";
-	$html  = yourls_apply_filters( 'html_select', $html, $name, $options, $selected, $display );
+	$html  = yourls_apply_filter( 'html_select', $html, $name, $options, $selected, $display );
 	if( $display )
 		echo $html;
 	return $html;
@@ -597,6 +626,15 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
 
 		<?php yourls_do_action( 'shareboxes_middle', $longurl, $shorturl, $title, $text ); ?>
 
+		<div id="sharebox" class="share">
+			<?php echo $share_title; ?>
+			<div id="tweet">
+				<span id="charcount" class="hide-if-no-js"><?php echo $count; ?></span>
+				<textarea id="tweet_body"><?php echo $share; ?></textarea>
+			</div>
+			<p id="share_links"><?php yourls_e( 'Share with' ); ?> 
+				<a id="share_tw" href="http://twitter.com/home?status=<?php echo $_share; ?>" title="<?php yourls_e( 'Tweet this!' ); ?>" onclick="share('tw');return false">Twitter</a>
+				<a id="share_fb" href="http://www.facebook.com/share.php?u=<?php echo $_url; ?>" title="<?php yourls_e( 'Share on Facebook' ); ?>" onclick="share('fb');return false;">Facebook</a>
 				<?php
 				yourls_do_action( 'share_links', $longurl, $shorturl, $title, $text );
 				// Note: on the main admin page, there are no parameters passed to the sharebox when it's drawn.
@@ -630,6 +668,8 @@ function yourls_html_zeroclipboard( $clipboard_target, $echo = true ) {
  *
  */
 function yourls_die( $message = '', $title = '', $header_code = 200 ) {
+    yourls_do_action( 'pre_yourls_die', $message, $title, $header_code );
+
 	yourls_status_header( $header_code );
 	
 	if( !$head = yourls_did_action( 'html_head' ) ) {
@@ -639,6 +679,7 @@ function yourls_die( $message = '', $title = '', $header_code = 200 ) {
 	
 	echo yourls_apply_filter( 'die_title', "<h2>$title</h2>" );
 	echo yourls_apply_filter( 'die_message', "<p>$message</p>" );
+    // Hook into 'yourls_die' to add more elements or messages to that page
 	yourls_do_action( 'yourls_die' );
 	
 	if( !$head ) {
@@ -657,12 +698,16 @@ function yourls_table_edit_row( $keyword ) {
 	$keyword = yourls_sanitize_string( $keyword );
 	$id = yourls_string2htmlid( $keyword ); // used as HTML #id
 	$url = yourls_get_keyword_longurl( $keyword );
-	
 	$title = htmlspecialchars( yourls_get_keyword_title( $keyword ) );
-	$safe_url = yourls_esc_attr( $url );
+	$safe_url = yourls_esc_attr( rawurldecode( $url ) );
 	$safe_title = yourls_esc_attr( $title );
+    
+    // Make strings sprintf() safe: '%' -> '%%'
+    $safe_url = str_replace( '%', '%%', $safe_url );
+    $safe_title = str_replace( '%', '%%', $safe_title );
+
 	$www = yourls_link();
-	
+    
 	$nonce = yourls_create_nonce( 'edit-save_'.$id );
 	
 	// @TODO: HTML Clean up
@@ -929,6 +974,69 @@ function yourls_wrapper_end() {
 	if( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG == true ) {
 		yourls_html_debug();
 	}
+	$help_link   = yourls_apply_filter( 'help_link',   '<a href="' . yourls_site_url( false ) .'/readme.html">' . yourls__( 'Help' ) . '</a>' );
+	
+	$admin_links    = array();
+	$admin_sublinks = array();
+	
+	$admin_links['admin'] = array(
+		'url'    => yourls_admin_url( 'index.php' ),
+		'title'  => yourls__( 'Go to the admin interface' ),
+		'anchor' => yourls__( 'Admin interface' )
+	);
+	
+	if( yourls_is_admin() ) {
+		$admin_links['tools'] = array(
+			'url'    => yourls_admin_url( 'tools.php' ),
+			'anchor' => yourls__( 'Tools' )
+		);
+		$admin_links['plugins'] = array(
+			'url'    => yourls_admin_url( 'plugins.php' ),
+			'anchor' => yourls__( 'Manage Plugins' )
+		);
+		$admin_sublinks['plugins'] = yourls_list_plugin_admin_pages();
+	}
+	
+	$admin_links    = yourls_apply_filter( 'admin_links',    $admin_links );
+	$admin_sublinks = yourls_apply_filter( 'admin_sublinks', $admin_sublinks );
+	
+	// Now output menu
+	echo '<nav role="navigation"><ul id="admin_menu">'."\n";
+	if ( yourls_is_private() && !empty( $logout_link ) )
+		echo '<li id="admin_menu_logout_link">' . $logout_link .'</li>';
+
+	foreach( (array)$admin_links as $link => $ar ) {
+		if( isset( $ar['url'] ) ) {
+			$anchor = isset( $ar['anchor'] ) ? $ar['anchor'] : $link;
+			$title  = isset( $ar['title'] ) ? 'title="' . $ar['title'] . '"' : '';
+			printf( '<li id="admin_menu_%s_link" class="admin_menu_toplevel"><a href="%s" %s>%s</a>', $link, $ar['url'], $title, $anchor );
+		}
+		// Output submenu if any. TODO: clean up, too many code duplicated here
+		if( isset( $admin_sublinks[$link] ) ) {
+			echo "<ul>\n";
+			foreach( $admin_sublinks[$link] as $link => $ar ) {
+				if( isset( $ar['url'] ) ) {
+					$anchor = isset( $ar['anchor'] ) ? $ar['anchor'] : $link;
+					$title  = isset( $ar['title'] ) ? 'title="' . $ar['title'] . '"' : '';
+					printf( '<li id="admin_menu_%s_link" class="admin_menu_sublevel admin_menu_sublevel_%s"><a href="%s" %s>%s</a>', $link, $link, $ar['url'], $title, $anchor );
+				}
+			}
+			echo "</ul>\n";
+		}
+	}
+	
+	if ( isset( $help_link ) )
+		echo '<li id="admin_menu_help_link">' . $help_link .'</li>';
+		
+	yourls_do_action( 'admin_menu' );
+	echo "</ul></nav>\n";
+	yourls_do_action( 'admin_notices' );
+	yourls_do_action( 'admin_notice' ); // because I never remember if it's 'notices' or 'notice'
+	/*
+	To display a notice:
+	$message = "<div>OMG, dude, I mean!</div>" );
+	yourls_add_action( 'admin_notices', create_function( '', "echo '$message';" ) );
+	*/
 }
 
 /**
@@ -1068,8 +1176,9 @@ function yourls_new_core_version_notice() {
  * @return bool whether header was sent
  */
 function yourls_content_type_header( $type ) {
+    yourls_do_action( 'content_type_header', $type );
 	if( !headers_sent() ) {
-		$charset = yourls_apply_filters( 'content_type_header_charset', 'utf-8' );
+		$charset = yourls_apply_filter( 'content_type_header_charset', 'utf-8' );
 		header( "Content-Type: $type; charset=$charset" );
 		return true;
 	}
@@ -1140,5 +1249,26 @@ function yourls_html_callout( $type, $content, $title = '' ) {
         yourls_html_htag( $title, 4 );
     echo $content;
 	echo '</div>';
+}
+
+
+/**
+ * Display or return HTML for a bookmarklet link
+ *
+ * @since 1.7.1
+ * @param string $href    bookmarklet link (presumably minified code with "javascript:" scheme)
+ * @param string $anchor  link anchor
+ * @param bool   $echo    true to display, false to return the HTML
+ * @return string         the HTML for a bookmarklet link
+ */
+function yourls_bookmarklet_link( $href, $anchor, $echo = true ) {
+    $alert = yourls_esc_attr__( 'Drag to your toolbar!' );
+    $link = <<<LINK
+    <a href="$href" class="bookmarklet" onclick="alert('$alert');return false;">$anchor</a>
+LINK;
+    
+    if( $echo )
+        echo $link;
+    return $link;
 }
 
