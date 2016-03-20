@@ -2004,41 +2004,6 @@ function yourls_shutdown() {
 }
 
 /**
- * Auto detect custom favicon in /user directory, fallback to YOURLS favicon, and echo/return its URL
- *
- */
-function yourls_favicon( $echo = true ) {
-	static $favicon = null;
-    
-	if( $favicon !== null ) {
-        if( $echo ) {
-            echo $favicon;
-        }
-        return $favicon;    
-    }
-	
-	$custom = null;
-	// search for favicon.(gif|ico|png|jpg|svg)
-	foreach( array( 'gif', 'ico', 'png', 'jpg', 'svg' ) as $ext ) {
-		if( file_exists( YOURLS_USERDIR. '/favicon.' . $ext ) ) {
-			$custom = 'favicon.' . $ext;
-			break;
-		}
-	}
-	
-	if( $custom ) {
-		$favicon = yourls_site_url( false, YOURLS_USERURL . '/' . $custom );
-	} else {
-		$favicon = yourls_site_url( false, YOURLS_ASSETURL . '/img/favicon.ico' );
-	}
-    
-	if( $echo ) {
-		echo $favicon;
-    }
-	return $favicon;
-}
-
-/**
  * Check for maintenance mode. If yes, die. See yourls_maintenance_mode(). Stolen from WP.
  *
  */
