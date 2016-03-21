@@ -222,3 +222,18 @@ function yourls_mb_strlen( $str, $encoding = null ) {
     // Fencepost: preg_split() always returns one extra item in the array
     return --$count;
 }
+
+/**
+ * Compat function for PHP 5.6 hash_equals()
+ *
+ * (hash_equals() is used in library phpass.)
+ *
+ * @since 2.0
+ */
+if(!function_exists('hash_equals')) {
+    function hash_equals($a, $b) {
+        $ret = strlen($a) ^ strlen($b);
+        $ret |= array_sum(unpack("C*", $a^$b));
+        return !$ret;
+    }
+}
