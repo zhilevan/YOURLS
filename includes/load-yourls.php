@@ -172,10 +172,9 @@ yourls_load_plugins();
 yourls_do_action( 'plugins_loaded' );
 
 // Init themes if applicable
-if( yourls_has_interface() ) {
-	yourls_init_theme();
-	yourls_do_action( 'init_theme' );
-}
+yourls_init_theme();
+yourls_do_action( 'init_theme' );
+
 
 // Is there a new version of YOURLS ?
 if( yourls_is_installed() && !yourls_is_upgrading() && yourls_maybe_check_core_version() ) {

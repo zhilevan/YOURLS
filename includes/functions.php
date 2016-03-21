@@ -1713,16 +1713,6 @@ function yourls_is_infos() {
 }
 
 /**
- * Check if we'll need interface display function (ie not API or redirection)
- *
- */
-function yourls_has_interface() {
-	if( yourls_is_API() or yourls_is_GO() )
-		return false;
-	return true;
-}
-
-/**
  * Check if we're in the admin area. Returns bool
  *
  */

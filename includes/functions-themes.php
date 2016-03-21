@@ -356,6 +356,14 @@ function yourls_get_themes() {
  * @since 1.7
  */
 function yourls_init_theme() {
+    // Don't load theme when installing or updating.
+    if( yourls_is_installing() OR yourls_is_upgrading() )
+        return;
+
+    // Don't load theme when there is no interface to be drawn
+    if( yourls_is_API() or yourls_is_GO() )
+        return;
+
 	yourls_do_action( 'pre_init_theme' );
 
 	// Enqueue default asset files - $ydb->assets will keep a list of needed CSS and JS
@@ -369,10 +377,6 @@ function yourls_init_theme() {
 	
 	// Set default template structure
 	yourls_set_template_content();
-	
-	// Don't load theme when installing or updating.
-	if( yourls_is_installing() OR yourls_is_upgrading() )
-		return;
 	
 	// Load theme if applicable
 	yourls_load_active_theme();
