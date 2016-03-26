@@ -768,10 +768,6 @@ function yourls_replace_string_tokens( $format, array $tokens, $default = '' ) {
  * @return string        Bookmarklet link
  */
 function yourls_make_bookmarklet( $code ) {
-    if ( !class_exists( 'BookmarkletGen', false ) ) {
-        require_once YOURLS_INC . '/BookmarkletGen/BookmarkletGen.php';
-    }
-
     $book = new BookmarkletGen;
     return $book->crunch( $code );
 }
