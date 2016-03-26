@@ -131,8 +131,8 @@ function yourls_html_menu( $current_page = null ) {
 	
 	$admin_links['admin'] = array(
 		'url'    => yourls_admin_url( 'index' ),
-		'title'  => yourls__( 'Go to the admin interface' ),
-		'anchor' => yourls__( 'Interface' ),
+		'title'  => yourls__( 'Go to the admin home' ),
+		'anchor' => yourls__( 'Home' ),
 		'icon'   => 'home'
 	);
 	
@@ -325,7 +325,7 @@ function yourls_html_language_attributes() {
  */
 function yourls_html_footer() {
 	echo '<hr /><div class="footer" role="contentinfo"><p>';
-	$footer  = yourls_s( 'Powered by %s', yourls_html_link( 'http://yourls.org/', 'YOURLS', 'YOURLS', false, false ) );
+	$footer  = yourls_s( '%s %s', yourls_html_link( 'http://yourls.org/', 'YOURLS', 'YOURLS', false, false ), YOURLS_VERSION );
 		echo yourls_apply_filter( 'html_footer_text', $footer );
 	echo '</p></div>';
 }
