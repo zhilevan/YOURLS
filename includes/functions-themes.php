@@ -101,16 +101,21 @@ function yourls_template_content( $template_part ) {
 	array_shift( $args ); // remove first element which is $template_part
 	
 	// Allow theming!
-	$elements = yourls_apply_filter( 'template_content', $ydb->template, $template_part, $args );
+    $elements = array();
+    if( property_exists( $ydb, 'template' ) ) {
+        $elements = yourls_apply_filter( 'template_content', $ydb->template, $template_part, $args );
+    }
 	
 	// 'Draw' page. Each template function is passed all arguments passed to yourls_template_content()
-	foreach( (array) $elements[ $template_part ] as $element ) {
-		if( is_callable( $element ) ) {
-			call_user_func_array( $element, $args );
-		} else {
-			yourls_add_notice( yourls_s( 'Undefined template function <code>%s</code>', $element ), 'error' ); //@TODO notice style
-		}
-	}
+    if( isset( $elements[ $template_part ] ) ) {
+        foreach( (array) $elements[ $template_part ] as $element ) {
+            if( is_callable( $element ) ) {
+                call_user_func_array( $element, $args );
+            } else {
+                yourls_add_notice( yourls_s( 'Undefined template function <code>%s</code>', $element ), 'error' ); //@TODO notice style
+            }
+        }
+    }
 	
 	if( $template_part == 'after' )
 		yourls_html_ending();
@@ -150,12 +155,15 @@ function yourls_output_asset_queue() {
 	global $ydb;
 	
 	// Filter the asset list before echoing links
-	$assets = yourls_apply_filter( 'html_assets_queue', $ydb->assets );
+    $assets = array();
+    if( property_exists( $ydb, 'assets' ) ) {
+        $assets = yourls_apply_filter( 'html_assets_queue', $ydb->assets );
+    }
 	
 	$core = yourls_core_assets();
 	
 	// Include assets
-	foreach( $assets as $type => $files ) {
+	foreach( (array)$assets as $type => $files ) {
 		foreach( $files as $name => $src ) {
 			// If no src provided, assume it's a core asset
 			if( !$src ) {
