@@ -294,17 +294,21 @@ yourls_do_action( 'admin_page_before_form' );
 	  
 yourls_html_addnew();
 
-if ( !$is_bookmark ) { 
-	if ( $search_sentence )
+if ( !$is_bookmark ) {
+    
+	if ( $search_sentence ) {
 		echo '<p>' . $search_sentence . '</p>';
-	echo '<p>';
+    }
+	
+    echo '<p>';
 		yourls_html_displaying_count( yourls__( 'URLs' ), $display_on_page, $max_on_page, $total_items );
 		if( $total_items_clicks !== false )
 			echo ", " . sprintf( yourls_n( 'counting <strong>1</strong> click', 'counting <strong>%s</strong> clicks', $total_items_clicks ), yourls_number_format_i18n( $total_items_clicks ) );
 	echo '.</p>';
 
-// If bookmarklet, add message. Otherwise, hide hidden share box.
+    // If bookmarklet, add message. Otherwise, hide hidden share box.
 	yourls_share_box( '', '', '', '', '', '', true );
+    
 } else {
 	echo '<script type="text/javascript">$(document).ready(function(){
 		feedback( "' . $return['message'] . '", "'. $return['status'] .'");
@@ -364,10 +368,11 @@ echo '<hr />';
 		'date_second'  => $date_second,
 	);
 	yourls_html_search( $params_search );
-} else
+} else {
 	yourls_share_box( $url, $return['shorturl'], $title, $text );
+}
 
 yourls_do_action( 'admin_page_after_content' );
 
 yourls_template_content( 'after', $context );
-?>
+

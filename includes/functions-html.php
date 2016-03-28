@@ -612,6 +612,8 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
 				yourls_do_action( 'share_links', $longurl, $shorturl, $title, $text );
 				// Note: on the main admin page, there are no parameters passed to the sharebox when it's drawn.
 				?>
+            </p>
+        </div>
 		
 		<?php yourls_do_action( 'shareboxes_after', $longurl, $shorturl, $title, $text ); ?>
 	
@@ -811,7 +813,7 @@ function yourls_table_add_row( $keyword, $url, $title = '', $ip, $clicks, $times
 		<input type="hidden" id="longurl-%id%" value="%long_url%"/>
 		<input type="hidden" id="title-%id%" value="%title_attr%"/>
 		<div class="actions" id="actions-%id%">
-			<p><small class="added_on">%added_on_from%</small><p>
+			<p><small class="added_on">%added_on_from%</small></p>
 			<p>%actions%</p>
 		</div>
 	</td>
@@ -947,69 +949,6 @@ function yourls_wrapper_end() {
 	if( defined( 'YOURLS_DEBUG' ) && YOURLS_DEBUG == true ) {
 		yourls_html_debug();
 	}
-	$help_link   = yourls_apply_filter( 'help_link',   '<a href="' . yourls_site_url( false ) .'/readme.html">' . yourls__( 'Help' ) . '</a>' );
-	
-	$admin_links    = array();
-	$admin_sublinks = array();
-	
-	$admin_links['admin'] = array(
-		'url'    => yourls_admin_url( 'index.php' ),
-		'title'  => yourls__( 'Go to the admin interface' ),
-		'anchor' => yourls__( 'Admin interface' )
-	);
-	
-	if( yourls_is_admin() ) {
-		$admin_links['tools'] = array(
-			'url'    => yourls_admin_url( 'tools.php' ),
-			'anchor' => yourls__( 'Tools' )
-		);
-		$admin_links['plugins'] = array(
-			'url'    => yourls_admin_url( 'plugins.php' ),
-			'anchor' => yourls__( 'Manage Plugins' )
-		);
-		$admin_sublinks['plugins'] = yourls_list_plugin_admin_pages();
-	}
-	
-	$admin_links    = yourls_apply_filter( 'admin_links',    $admin_links );
-	$admin_sublinks = yourls_apply_filter( 'admin_sublinks', $admin_sublinks );
-	
-	// Now output menu
-	echo '<nav role="navigation"><ul id="admin_menu">'."\n";
-	if ( yourls_is_private() && !empty( $logout_link ) )
-		echo '<li id="admin_menu_logout_link">' . $logout_link .'</li>';
-
-	foreach( (array)$admin_links as $link => $ar ) {
-		if( isset( $ar['url'] ) ) {
-			$anchor = isset( $ar['anchor'] ) ? $ar['anchor'] : $link;
-			$title  = isset( $ar['title'] ) ? 'title="' . $ar['title'] . '"' : '';
-			printf( '<li id="admin_menu_%s_link" class="admin_menu_toplevel"><a href="%s" %s>%s</a>', $link, $ar['url'], $title, $anchor );
-		}
-		// Output submenu if any. TODO: clean up, too many code duplicated here
-		if( isset( $admin_sublinks[$link] ) ) {
-			echo "<ul>\n";
-			foreach( $admin_sublinks[$link] as $link => $ar ) {
-				if( isset( $ar['url'] ) ) {
-					$anchor = isset( $ar['anchor'] ) ? $ar['anchor'] : $link;
-					$title  = isset( $ar['title'] ) ? 'title="' . $ar['title'] . '"' : '';
-					printf( '<li id="admin_menu_%s_link" class="admin_menu_sublevel admin_menu_sublevel_%s"><a href="%s" %s>%s</a>', $link, $link, $ar['url'], $title, $anchor );
-				}
-			}
-			echo "</ul>\n";
-		}
-	}
-	
-	if ( isset( $help_link ) )
-		echo '<li id="admin_menu_help_link">' . $help_link .'</li>';
-		
-	yourls_do_action( 'admin_menu' );
-	echo "</ul></nav>\n";
-	yourls_do_action( 'admin_notices' );
-	yourls_do_action( 'admin_notice' ); // because I never remember if it's 'notices' or 'notice'
-	/*
-	To display a notice:
-	$message = "<div>OMG, dude, I mean!</div>" );
-	yourls_add_action( 'admin_notices', create_function( '', "echo '$message';" ) );
-	*/
 }
 
 /**
