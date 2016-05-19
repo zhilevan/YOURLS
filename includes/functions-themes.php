@@ -135,7 +135,7 @@ function yourls_core_assets() {
 		'js'  => array(
 			// 'handle' => 'file basename'
 			'jquery'    => 'jquery.min',
-			'clipboard' => 'ZeroClipboard.min',
+			'clipboard' => 'clipboard.min',
 			'scripts'   => 'bootstrap.min',
 			'details'   => 'details.min',
 			'yourls'    => 'yourls',

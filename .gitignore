@@ -86,3 +86,6 @@ assets/less/*.css
 node_modules
 __untyped__
 bower_components
+
+# NetBeans files
+/nbproject/

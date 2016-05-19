@@ -312,7 +312,6 @@ if ( !$is_bookmark ) {
 } else {
 	echo '<script type="text/javascript">$(document).ready(function(){
 		feedback( "' . $return['message'] . '", "'. $return['status'] .'");
-		init_clipboard();
 	});</script>';
 }
 

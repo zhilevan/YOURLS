@@ -172,37 +172,34 @@ function decrement_counter() {
     });
 }
 
-// Init the ZeroClipboard buttons & tooltips
+// Init the Clipboard buttons & tooltips
+// TODO: DOESNT WORK FFS
 function init_clipboard() {
-    if (typeof (ZeroClipboard) === 'undefined')
-        return false;
+    var clipboard = new Clipboard('.btn-clipboard', {
+        text: function(trigger) {
+            var target = '#' + $(trigger).attr('data-clipboard-target');
+            console.log($(target).val());
+            return trigger.getAttribute('data-copied-hint');
+        }
+    });
+    
+    clipboard.on('mouseover', function () { $(this).tooltip('show'); });
+    clipboard.on('mouseout', function () {
+        var title = null;
+        if (title === $(this).attr('data-temp-title')) {
+            $(this).attr('data-original-title', title).removeAttr('data-temp-title');
+        }
+        $(this).tooltip('hide');
+    });
+    clipboard.on('success', function () {
+        if (!$(this).attr('data-temp-title')) {
+            var hint = $(this).attr('data-copied-hint');
+            $(this).attr('data-temp-title', $(this).attr('data-original-title'));
+            $(this).attr('data-original-title', hint);
+            $(this).tooltip('show');
+        }
+    });
 
-    if (ZeroClipboard.detectFlashSupport()) {
-        ZeroClipboard.setDefaults({ moviePath: moviepath, hoverClass: "btn-clipboard-hover", activeClass: "btn-clipboard-active" });
-        var zclip = new ZeroClipboard($(".btn-clipboard"));
-        zclip.on('wrongflash', function (client, args) {
-            alert('Your flash is too old ' + args.flashVersion);
-            // TODO: replace this with the notify JS stuff.
-        });
-        zclip.on('mouseover', function () { $(this).tooltip('show'); });
-        zclip.on('mouseout', function () {
-            var title = null;
-            if (title === $(this).attr('data-temp-title')) {
-                $(this).attr('data-original-title', title).removeAttr('data-temp-title');
-            }
-            $(this).tooltip('hide');
-        });
-        zclip.on('complete', function () {
-            if (!$(this).attr('data-temp-title')) {
-                var hint = $(this).attr('data-copied-hint');
-                $(this).attr('data-temp-title', $(this).attr('data-original-title'));
-                $(this).attr('data-original-title', hint);
-                $(this).tooltip('show');
-            }
-        });
-    } else {
-        $(".btn-clipboard").hide();
-    }
 }
 
 // Get the var=xxx from a query string

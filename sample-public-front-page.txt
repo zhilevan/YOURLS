@@ -63,6 +63,9 @@ if ( isset( $_REQUEST['url'] ) && $_REQUEST['url'] != 'http://' ) {
 	if( $status == 'success' ) {
 		// Include the Copy box and the Quick Share box
 		yourls_share_box( $url, $shorturl, $title, $text );
+		
+		// Initialize clipboard -- requires js/share.js and js/clipboard.min.js to be properly loaded in the <head>
+		echo "<script>init_clipboard();</script>\n";
 	}
 
 // Part to be executed when no form has been submitted

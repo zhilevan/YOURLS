@@ -54,9 +54,7 @@ function yourls_html_head( $context = 'index', $title = '' ) {
 	<?php } ?>
 	<script type="text/javascript">
 	//<![CDATA[
-		var ajaxurl    = '<?php echo yourls_admin_url( 'admin-ajax.php' ); ?>';
-		var moviepath  = '<?php yourls_site_url( true, YOURLS_ASSETURL . '/js/ZeroClipboard.swf' ); ?>';
-		
+		var ajaxurl  = '<?php echo yourls_admin_url( 'admin-ajax.php' ); ?>';
 	//]]>
 	</script>
 	<?php yourls_do_action( 'html_head', $context ); ?>
@@ -631,7 +629,7 @@ function yourls_share_box( $longurl, $shorturl, $title = '', $text='', $shortlin
  */
 function yourls_html_zeroclipboard( $clipboard_target, $echo = true ) {
 	$html = yourls_apply_filter( 'html_zeroclipboard',
-	'<button class="btn-clipboard" data-copied-hint="' . yourls__( 'Copied!' ) . '" data-clipboard-target="' . $clipboard_target . '" data-placement="bottom" data-trigger="manual" data-original-title="' . yourls__( 'Copy to clipboard' ) . '"><i class="fa fa-copy"></i></button>',
+	'<button class="btn-clipboard" data-copied-hint="' . yourls_esc_attr__( 'Copied!' ) . '" data-clipboard-target="' . $clipboard_target . '" data-placement="bottom" data-trigger="manual" data-original-title="' . yourls_esc_attr__( 'Copy to clipboard' ) . '"><i class="fa fa-copy"></i></button>',
 	$clipboard_target );
 	if( $echo )
 		echo $html;
